@@ -3,8 +3,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Parameters:
   DBInstanceClass:
     Type: String
+  DBPassword:
+    Type: String
+    NoEcho: true
 
 Resources:
+
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Private subnets for DB
+      SubnetIds: !Split [",", !ImportValue PrivateSubnets]
+
   DB:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -12,6 +22,7 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: 20
       MasterUsername: admin
-      MasterUserPassword: password123
+      MasterUserPassword: !Ref DBPassword
+      DBSubnetGroupName: !Ref DBSubnetGroup
       VPCSecurityGroups:
         - !ImportValue RDSSG
