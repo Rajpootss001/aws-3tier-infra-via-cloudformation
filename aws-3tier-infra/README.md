@@ -1,5 +1,3 @@
----
-
 # AWS 3-Tier Architecture Infrastructure (CloudFormation)
 
 ## 1. Overview
