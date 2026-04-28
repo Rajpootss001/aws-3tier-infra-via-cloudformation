@@ -9,11 +9,23 @@ Resources:
 
   PublicRoute:
     Type: AWS::EC2::Route
-    DependsOn: PublicRT
     Properties:
       RouteTableId: !Ref PublicRT
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !ImportValue IGWId
+
+  PublicSubnetAssoc1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Select [0, !Split [",", !ImportValue PublicSubnets]]
+      RouteTableId: !Ref PublicRT
+
+  PublicSubnetAssoc2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Select [1, !Split [",", !ImportValue PublicSubnets]]
+      RouteTableId: !Ref PublicRT
+
 
   PrivateRT:
     Type: AWS::EC2::RouteTable
@@ -26,3 +38,15 @@ Resources:
       RouteTableId: !Ref PrivateRT
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !ImportValue NATId
+
+  PrivateSubnetAssoc1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Select [0, !Split [",", !ImportValue PrivateSubnets]]
+      RouteTableId: !Ref PrivateRT
+
+  PrivateSubnetAssoc2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Select [1, !Split [",", !ImportValue PrivateSubnets]]
+      RouteTableId: !Ref PrivateRT
