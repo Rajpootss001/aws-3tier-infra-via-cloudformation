@@ -1,1 +1,0 @@
-# aws-3tier-infra-via-cloudformation
