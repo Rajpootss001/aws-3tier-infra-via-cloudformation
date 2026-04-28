@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  DesiredCapacity:
+    Type: Number
+  MaxSize:
+    Type: Number
+
+Resources:
+  ASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MinSize: 1
+      MaxSize: !Ref MaxSize
+      DesiredCapacity: !Ref DesiredCapacity
+      VPCZoneIdentifier: !Split [",", !ImportValue PrivateSubnets]
+      TargetGroupARNs:
+        - !ImportValue TargetGroupArn
+      LaunchTemplate:
+        LaunchTemplateId: !ImportValue LTId
+        Version: 1

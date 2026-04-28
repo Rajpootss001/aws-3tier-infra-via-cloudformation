@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  IGW:
+    Type: AWS::EC2::InternetGateway
+
+  AttachIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !ImportValue VPCId
+      InternetGatewayId: !Ref IGW
+
+Outputs:
+  IGWId:
+    Value: !Ref IGW
+    Export:
+      Name: IGWId

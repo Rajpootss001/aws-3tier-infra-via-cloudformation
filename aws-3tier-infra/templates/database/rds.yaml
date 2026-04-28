@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  DBInstanceClass:
+    Type: String
+
+Resources:
+  DB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mysql
+      DBInstanceClass: !Ref DBInstanceClass
+      AllocatedStorage: 20
+      MasterUsername: admin
+      MasterUserPassword: password123
+      VPCSecurityGroups:
+        - !ImportValue RDSSG

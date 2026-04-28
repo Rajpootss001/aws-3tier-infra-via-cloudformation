@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  InstanceType:
+    Type: String
+
+Resources:
+  LT:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: ami-0c55b159cbfafe1f0
+        InstanceType: !Ref InstanceType
+        SecurityGroupIds:
+          - !ImportValue EC2SG
+
+Outputs:
+  LTId:
+    Value: !Ref LT
+    Export:
+      Name: LTId

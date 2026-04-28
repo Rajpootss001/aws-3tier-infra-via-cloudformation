@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Route53 DNS for ALB
+
+Parameters:
+  DomainName:
+    Type: String
+    Description: example.com
+
+Resources:
+
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZone
+      Name: !Sub "app.${DomainName}"
+      Type: A
+      AliasTarget:
+        DNSName: !ImportValue ALBDNSName
+        HostedZoneId: !ImportValue ALBHostedZoneId

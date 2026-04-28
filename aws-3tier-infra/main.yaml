@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  InstanceType:
+    Type: String
+  DesiredCapacity:
+    Type: Number
+  MaxSize:
+    Type: Number
+  DBInstanceClass:
+    Type: String
+
+Resources:
+
+  VPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: network/vpc.yaml
+
+  Subnets:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: VPC
+    Properties:
+      TemplateURL: network/subnets.yaml
+
+  IGW:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: Subnets
+    Properties:
+      TemplateURL: network/igw.yaml
+
+  NAT:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: IGW
+    Properties:
+      TemplateURL: network/nat.yaml
+
+  RT:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: NAT
+    Properties:
+      TemplateURL: network/route-tables.yaml
+
+  SGALB:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: RT
+    Properties:
+      TemplateURL: security/sg-alb.yaml
+
+  SGEC2:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: SGALB
+    Properties:
+      TemplateURL: security/sg-ec2.yaml
+
+  SGRDS:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: SGEC2
+    Properties:
+      TemplateURL: security/sg-rds.yaml
+
+  ALB:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: SGALB
+    Properties:
+      TemplateURL: loadbalancer/alb.yaml
+
+  LT:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: SGEC2
+    Properties:
+      TemplateURL: compute/launch-template.yaml
+      Parameters:
+        InstanceType: !Ref InstanceType
+
+  ASG:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: LT
+    Properties:
+      TemplateURL: compute/autoscaling.yaml
+      Parameters:
+        DesiredCapacity: !Ref DesiredCapacity
+        MaxSize: !Ref MaxSize
+
+  DB:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: SGRDS
+    Properties:
+      TemplateURL: database/rds.yaml
+      Parameters:
+        DBInstanceClass: !Ref DBInstanceClass

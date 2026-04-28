@@ -1,0 +1,6 @@
+[
+  { "ParameterKey": "InstanceType", "ParameterValue": "t3.micro" },
+  { "ParameterKey": "DesiredCapacity", "ParameterValue": "2" },
+  { "ParameterKey": "MaxSize", "ParameterValue": "4" },
+  { "ParameterKey": "DBInstanceClass", "ParameterValue": "db.t3.micro" }
+]
